@@ -1,7 +1,7 @@
 import argparse
 
 parser = argparse.ArgumentParser(description='DELU')
-parser.add_argument('--path_dataset', type=str, default='path/to/Thumos14', help='the path of data feature')
+parser.add_argument('--path_dataset', type=str, default='/home/jjiang/experiments/ECCV2022-DELU/data/DELU-THUMOS-14', help='the path of data feature')
 parser.add_argument('--lr', type=float, default=0.00005, help='learning rate (default: 0.0001)')
 parser.add_argument('--batch_size', type=int, default=10, help='number of instances in a batch of data (default: 10)')
 parser.add_argument('--model_name', default='weakloc', help='name to save model')
