@@ -38,6 +38,11 @@ class BWA_fusion_dropout_feat_v2(torch.nn.Module):
         self.channel_avg = nn.AdaptiveAvgPool1d(1)
 
     def forward(self, vfeat, ffeat):
+        # print('vfeat.shape', vfeat.shape)
+        # print('ffeat.shape', ffeat.shape)
+        # # vfeat.shape torch.Size([10, 1024, 320]), [B, T/2, C]
+        # # ffeat.shape torch.Size([10, 1024, 320]), [B, T/2, C]
+
         channelfeat = self.channel_avg(vfeat)
         channel_attn = self.channel_conv(channelfeat)
         bit_wise_attn = self.bit_wise_attn(ffeat)
@@ -78,9 +83,29 @@ class DELU(torch.nn.Module):
         self.apply(weights_init)
 
     def forward(self, inputs, is_training=True, **args):
+        # print('inputs.shape=', inputs.shape)
+        # inputs.shape = torch.Size([10, 320, 2048]), [B, T, C]
+
         feat = inputs.transpose(-1, -2)
+
+        # print('feat.shape=', feat.shape)
+        # feat.shape = torch.Size([10, 2048, 320]), [B, C, T]
+
         v_atn, vfeat = self.vAttn(feat[:, :1024, :], feat[:, 1024:, :])
+
+        # print('v_atn.shape=', v_atn.shape)
+        # print('vfeat.shape=', vfeat.shape)
+        # # v_atn.shape = torch.Size([10, 1, 320]), [B, 1, T]
+        # # vfeat.shape = torch.Size([10, 1024, 320]), [B, C/2, T]
+
         f_atn, ffeat = self.fAttn(feat[:, 1024:, :], feat[:, :1024, :])
+
+        # print('f_atn.shape=', f_atn.shape)
+        # print('ffeat.shape=', ffeat.shape)
+        # # f_atn.shape = torch.Size([10, 1, 320]), [B, 1, T]
+        # # ffeat.shape = torch.Size([10, 1024, 320]), [B, C/2, T]
+
+        # 将RGB和Flow进行融合
         x_atn = (f_atn + v_atn) / 2
         nfeat = torch.cat((vfeat, ffeat), 1)
         nfeat = self.fusion(nfeat)
@@ -110,6 +135,7 @@ class DELU(torch.nn.Module):
 
         element_logits_supp = self._multiply(element_logits, element_atn, include_min=True)
 
+        # 计算 L_{gedl}
         edl_loss = self.edl_loss(element_logits_supp,
                                  element_atn,
                                  labels,
