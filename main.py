@@ -51,7 +51,7 @@ if __name__ == '__main__':
     else:
         max_map = [0] * 10
     log_model_path = os.path.join(args.path_dataset, 'logs', args.model_name)
-    ckpt_path = os.path.join(args.path_dataset, 'ckpt')
+    ckpt_path = args.save_dir
     if not os.path.exists(ckpt_path):
         os.makedirs(ckpt_path)
     print(args)

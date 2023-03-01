@@ -25,6 +25,10 @@ parser.add_argument('--weight_decay', type=float, default=5e-4)
 parser.add_argument('--dataset', type=str, default='SampleDataset')
 parser.add_argument('--proposal_method', type=str, default='multiple_threshold_hamnet')
 
+# 自己加的
+parser.add_argument('--save_dir', type=str, default='./ckpt/DELU')
+parser.add_argument('--test_ckpt', type=str, default='./ckpt/paper/best_DELU.pkl')
+
 # for proposal genration
 parser.add_argument('--scale', type=float, default=1)
 parser.add_argument("--feature_fps", type=int, default=25)

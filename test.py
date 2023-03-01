@@ -98,7 +98,7 @@ if __name__ == '__main__':
     dataset = getattr(wsad_dataset, args.dataset)(args)
 
     model = getattr(model, args.use_model)(dataset.feature_size, dataset.num_class, opt=args).to(device)
-    model.load_state_dict(torch.load('./data/best_DELU.pkl'))
+    model.load_state_dict(torch.load(args.test_ckpt))
 
     iou, dmap = test(-1, dataset, args, model, device)
     print('mAP Avg 0.1-0.5: {}, mAP Avg 0.3-0.7: {}, mAP Avg 0.1-0.7: {}, mAP Avg ALL: {}'.format(
